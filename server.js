@@ -43,6 +43,7 @@ function handleError(error, res) {
   if (res) res.status(500).send('Sorry, something broke');
 }
 
+//This object constructor designates the information we want to recieve back from the API. As a result of this, the API will return an object with the requested data.
 function Location(query, data) {
   this.search_query = query;
   this.formatted_query = data.formatted_address;
