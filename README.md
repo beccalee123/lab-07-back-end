@@ -39,10 +39,10 @@ Actual time needed to complete: 1.5 hours
 ------------
 
 Number and name of feature:  #3: Retrieve movie information
-Estimate of time needed to complete: _____
-Start time: _____
-Finish time: _____
-Actual time needed to complete: _____
+Estimate of time needed to complete: 1
+Start time: 1:03pm
+Finish time: 1:47pm
+Actual time needed to complete: 45 minutes
 
 
 ## Credits and Collaborations
