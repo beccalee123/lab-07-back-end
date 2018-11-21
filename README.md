@@ -23,10 +23,11 @@ Javascript, node, NPM, Express. dotENV, google geocoding API, Heroku, Github, Po
 ## Change Log
 
 Number and name of feature: #1: Consistently format data
-Estimate of time needed to complete: _____
-Start time: _____
-Finish time: _____
-Actual time needed to complete: _____
+Estimate of time needed to complete: 1 hour
+Start time: 10:15 am
+Finish time: 10:45 am
+Actual time needed to complete: 30 minutes
+Most of this code was already taken care of from the demo in class but we will be following this format going forward
 
 ------------
 Number and name of feature: #2: Retrieve restaurant information
