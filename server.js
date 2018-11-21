@@ -22,12 +22,8 @@ app.get('/location', (request, response) => {
 
 // Helper Functions
 function searchToLatLong(query) {
-  //The below got deleted since we're replacing with an API key
-  // const geoData = require('./data/geo.json'); 
-  // const location = new Location(geoData.results[0]);
-  // location.search_query = query;
-  // return location;
-
+  //Originally this referenced getting mock data from the JSON file as initial set up. Since the project is designed to work with APIs the code needed to be updated to submit search queries to APIs and return results.
+  
   //Concatenate URL
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
 
@@ -41,7 +37,7 @@ function searchToLatLong(query) {
     })
     .catch((error, res) => handleError(error, res));
 }
-
+//Error handler for alerting developer in node if the internal server is having issues processing the request. This will help debug the code if there are issues with it populating in the client side app.
 function handleError(error, res) {
   console.error(error);
   if (res) res.status(500).send('Sorry, something broke');
