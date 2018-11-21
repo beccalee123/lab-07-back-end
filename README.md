@@ -31,10 +31,10 @@ Most of this code was already taken care of from the demo in class but we will b
 
 ------------
 Number and name of feature: #2: Retrieve restaurant information
-Estimate of time needed to complete: _____
-Start time: _____
-Finish time: _____
-Actual time needed to complete: _____
+Estimate of time needed to complete: 1.5 hours
+Start time: 10:45 am
+Finish time: 12:50
+Actual time needed to complete: 1.5 hours 
 
 ------------
 

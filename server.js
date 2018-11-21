@@ -25,6 +25,9 @@ app.get('/location', (request, response) => {
 });
 
 app.get('/weather', getWeather);
+app.get('/yelp', getRestaurants);
+
+
 
 // Helper Functions
 
@@ -59,6 +62,21 @@ function getWeather(request, response) {
     .catch(error => handleError(error, response));
 }
 
+function getRestaurants(request, response) {
+  const url = `https://api.yelp.com/v3/businesses/search?term=restaurants&latitude=${request.query.data.latitude}&longitude=${request.query.data.longitude}`;
+
+  superagent.get(url)
+    .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
+    .then(result => {
+      console.log(result.body);
+      const restaurantSummaries = result.body.businesses.map(business => {
+        return new Restaurant(business);
+      });
+      response.send(restaurantSummaries);
+    })
+    .catch(error => handleError(error, response));
+}
+
 //Error Handling
 
 //Error handler for alerting developer in node if the internal server is having issues processing the request. This will help debug the code if there are issues with it populating in the client side app.
@@ -81,6 +99,14 @@ function Location(query, data) {
 function Weather(day) {
   this.forecast = day.summary;
   this.time = new Date(day.time * 1000).toString().slice(0, 15);
+}
+
+function Restaurant(business) {
+  this.name = business.name;
+  this.image_url = business.image_url;
+  this.price = business.price;
+  this.rating = business.rating;
+  this.url = business.url;
 }
 
 // Make sure the server is listening for requests
