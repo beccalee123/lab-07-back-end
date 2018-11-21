@@ -26,8 +26,7 @@ app.get('/location', (request, response) => {
 
 app.get('/weather', getWeather);
 app.get('/yelp', getRestaurants);
-
-
+app.get('/movies', getMovies);
 
 // Helper Functions
 
@@ -41,7 +40,7 @@ function searchToLatLong(query) {
   return superagent.get(url)
     //Recieve info
     .then((res) => {
-      console.log(res.body.results[0]);
+      // console.log(res.body.results[0]);
       //return new instance/modify object
       return new Location(query, res.body.results[0]);
     })
@@ -68,13 +67,27 @@ function getRestaurants(request, response) {
   superagent.get(url)
     .set('Authorization', `Bearer ${process.env.YELP_API_KEY}`)
     .then(result => {
-      console.log(result.body);
+      // console.log(result.body);
       const restaurantSummaries = result.body.businesses.map(business => {
         return new Restaurant(business);
       });
       response.send(restaurantSummaries);
     })
     .catch(error => handleError(error, response));
+}
+
+function getMovies(request, response) {
+  const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIESDB_API_KEY}&language=en-US&query=${request.query.data.search_query}`
+
+  superagent.get(url)
+  .then(result => {
+    console.log(result.body);
+    const movieSummaries = result.body.results.map(film => {
+      return new Movie(film);
+    });
+    response.send(movieSummaries);
+  })
+  .catch(error => handleError(error, response));
 }
 
 //Error Handling
@@ -93,7 +106,7 @@ function Location(query, data) {
   this.formatted_query = data.formatted_address;
   this.latitude = data.geometry.location.lat;
   this.longitude = data.geometry.location.lng;
-  console.log(this);
+  // console.log(this);
 }
 
 function Weather(day) {
@@ -107,6 +120,16 @@ function Restaurant(business) {
   this.price = business.price;
   this.rating = business.rating;
   this.url = business.url;
+}
+
+function Movie(film){
+  this.title = film.title;
+  this.overview = film.overview;
+  this.average_votes = film.average_votes;
+  this.total_votes = film.total_votes;
+  this.image_url = `http://image.tmdb.org/t/p/w185/${film.poster_path}`;
+  this.popularity = film.popularity;
+  this.released_on = film.released_on;
 }
 
 // Make sure the server is listening for requests
