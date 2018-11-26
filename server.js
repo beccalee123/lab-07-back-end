@@ -108,17 +108,17 @@ function getMeetup(request, response) {
 }
 
 function getTrail(request, response) {
-  // const url =  ;
+  const url =  `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&maxDistance=10&key=${process.env.TRAILS_API_KEY}`
 
   superagent.get(url)
-  .then(result => {
-    console.log(result.body);
-    // const trailSummaries = result.body.events
-      return new getTrail(hike);
-  });
-  response.send(trailSummaries);
-})
-.catch(error => handleError(error, response));
+    .then(result => {
+      console.log(result.body);
+      const trailSummaries = result.body.trails.map(hike => {
+        return new Trail(hike);
+      });
+      response.send(trailSummaries);
+    })
+    .catch(error => handleError(error, response));
 }
 
 //Error Handling
@@ -175,12 +175,12 @@ function Trail(hike) {
   this.location = hike.location;
   this.length = hike.length;
   this.stars = hike.stars;
-  this.star_votes = hike.star_votes;
+  this.star_votes = hike.starVotes;
   this.summary = hike.summary;
-  this.trail_url = hike.trail_url;
-  this.conditions = hike.conditions;
-  this.conditions_date = hike.conditions_date;
-  this.condition_time = hike.condition_time;
+  this.trail_url = `https://www.hikingproject.com/trail/${hike.id}/${hike.name}`;
+  this.conditions = hike.conditionDetails;
+  this.conditions_date = hike.conditionDate;
+  this.condition_time = hike.conditionDate;
 
 }
 // Make sure the server is listening for requests
