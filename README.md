@@ -39,7 +39,7 @@ Actual time needed to complete: 1.5 hours
 ------------
 
 Number and name of feature:  #3: Retrieve movie information
-Estimate of time needed to complete: 1
+Estimate of time needed to complete: 1 hour
 Start time: 1:03pm
 Finish time: 1:47pm
 Actual time needed to complete: 45 minutes
@@ -47,11 +47,18 @@ Actual time needed to complete: 45 minutes
 ------------
 
 Number and name of feature:  #4: Retrieve meetup information
-Estimate of time needed to complete: 1 
+Estimate of time needed to complete: 1 hour
 Start time: 10:00 am
-Finish time: 1:47pm
-Actual time needed to complete: 45 minutes
+Finish time: 12:30pm
+Actual time needed to complete: 2 hours 
 
+------------
+
+Number and name of feature:  #5: Retrieve trails information
+Estimate of time needed to complete: 1 hour
+Start time: 1:10 pm
+Finish time: 
+Actual time needed to complete: 
 
 
 

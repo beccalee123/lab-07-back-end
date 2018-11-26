@@ -28,6 +28,7 @@ app.get('/weather', getWeather);
 app.get('/yelp', getRestaurants);
 app.get('/movies', getMovies);
 app.get('/meetups', getMeetup);
+app.get('/trails', getTrail);
 
 // Helper Functions
 
@@ -97,7 +98,7 @@ function getMeetup(request, response) {
 
   superagent.get(url)
     .then(result => {
-      console.log('Body: ', result.body);
+      // console.log('Body: ', result.body);
       const meetupSummaries = result.body.events.map(event => {
         return new Meetup(event);
       });
@@ -106,6 +107,19 @@ function getMeetup(request, response) {
     .catch(error => handleError(error, response));
 }
 
+function getTrail(request, response) {
+  // const url =  ;
+
+  superagent.get(url)
+  .then(result => {
+    console.log(result.body);
+    // const trailSummaries = result.body.events
+      return new getTrail(hike);
+  });
+  response.send(trailSummaries);
+})
+.catch(error => handleError(error, response));
+}
 
 //Error Handling
 
@@ -154,6 +168,20 @@ function Meetup(event) {
   this.name = event.name;
   this.creation_date = new Date(event.created);
   this.host = event.group.name;
+}
+
+function Trail(hike) {
+  this.name = hike.name;
+  this.location = hike.location;
+  this.length = hike.length;
+  this.stars = hike.stars;
+  this.star_votes = hike.star_votes;
+  this.summary = hike.summary;
+  this.trail_url = hike.trail_url;
+  this.conditions = hike.conditions;
+  this.conditions_date = hike.conditions_date;
+  this.condition_time = hike.condition_time;
+
 }
 // Make sure the server is listening for requests
 app.listen(PORT, () => console.log(`App is up on ${PORT}`));
