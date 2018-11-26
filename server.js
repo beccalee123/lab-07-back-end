@@ -27,13 +27,13 @@ app.get('/location', (request, response) => {
 app.get('/weather', getWeather);
 app.get('/yelp', getRestaurants);
 app.get('/movies', getMovies);
-app.get('/meetup', getMeetups);
+app.get('/meetups', getMeetup);
 
 // Helper Functions
 
 function searchToLatLong(query) {
   //Originally this referenced getting mock data from the JSON file as initial set up. Since the project is designed to work with APIs the code needed to be updated to submit search queries to APIs and return results.
-  
+
   //Concatenate URL
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
 
@@ -91,14 +91,14 @@ function getMovies(request, response) {
     .catch(error => handleError(error, response));
 }
 
-function getMeetups(request, response) {
-  const url = `https://api.meetup.com/find/locations?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&API_KEY=${process.env.MEETUPS_API_KEY}`
-  
+function getMeetup(request, response) {
+  const url = `https://api.meetup.com/find/upcoming_events?&sign=true&photo-host=public&page=20&lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.MEETUPS_API_KEY}`
+
 
   superagent.get(url)
     .then(result => {
-      console.log(result.body);
-      const meetupSummaries = result.body.results.map(event => {
+      console.log('Body: ', result.body);
+      const meetupSummaries = result.body.events.map(event => {
         return new Meetup(event);
       });
       response.send(meetupSummaries);
@@ -150,10 +150,10 @@ function Movie(film){
 }
 
 function Meetup(event) {
-  this.link = event.link;
+  this.link = `http://www.meetup.com/${event.link}`;
   this.name = event.name;
-  this.creation_date = event.creation_date;
-  this.host = event.host;
+  this.creation_date = new Date(event.created);
+  this.host = event.group.name;
 }
 // Make sure the server is listening for requests
 app.listen(PORT, () => console.log(`App is up on ${PORT}`));
