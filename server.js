@@ -27,6 +27,7 @@ app.get('/location', (request, response) => {
 app.get('/weather', getWeather);
 app.get('/yelp', getRestaurants);
 app.get('/movies', getMovies);
+app.get('/meetup', getMeetups);
 
 // Helper Functions
 
@@ -81,7 +82,7 @@ function getMovies(request, response) {
 
   superagent.get(url)
     .then(result => {
-      console.log(result.body);
+      //console.log(result.body);
       const movieSummaries = result.body.results.map(film => {
         return new Movie(film);
       });
@@ -89,6 +90,22 @@ function getMovies(request, response) {
     })
     .catch(error => handleError(error, response));
 }
+
+function getMeetups(request, response) {
+  const url = `https://api.meetup.com/find/locations?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&API_KEY=${process.env.MEETUPS_API_KEY}`
+  
+
+  superagent.get(url)
+    .then(result => {
+      console.log(result.body);
+      const meetupSummaries = result.body.results.map(event => {
+        return new Meetup(event);
+      });
+      response.send(meetupSummaries);
+    })
+    .catch(error => handleError(error, response));
+}
+
 
 //Error Handling
 
@@ -132,5 +149,11 @@ function Movie(film){
   this.release_date = film.release_date;
 }
 
+function Meetup(event) {
+  this.link = event.link;
+  this.name = event.name;
+  this.creation_date = event.creation_date;
+  this.host = event.host;
+}
 // Make sure the server is listening for requests
 app.listen(PORT, () => console.log(`App is up on ${PORT}`));

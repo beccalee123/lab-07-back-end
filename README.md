@@ -44,6 +44,16 @@ Start time: 1:03pm
 Finish time: 1:47pm
 Actual time needed to complete: 45 minutes
 
+------------
+
+Number and name of feature:  #4: Retrieve meetup information
+Estimate of time needed to complete: 1 
+Start time: 10:00 am
+Finish time: 1:47pm
+Actual time needed to complete: 45 minutes
+
+
+
 
 ## Credits and Collaborations
 - Sam Hamm for notes on how to write server js (from class 6)
