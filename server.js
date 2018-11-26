@@ -80,14 +80,14 @@ function getMovies(request, response) {
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIESDB_API_KEY}&language=en-US&query=${request.query.data.search_query}`
 
   superagent.get(url)
-  .then(result => {
-    console.log(result.body);
-    const movieSummaries = result.body.results.map(film => {
-      return new Movie(film);
-    });
-    response.send(movieSummaries);
-  })
-  .catch(error => handleError(error, response));
+    .then(result => {
+      console.log(result.body);
+      const movieSummaries = result.body.results.map(film => {
+        return new Movie(film);
+      });
+      response.send(movieSummaries);
+    })
+    .catch(error => handleError(error, response));
 }
 
 //Error Handling
@@ -129,7 +129,7 @@ function Movie(film){
   this.total_votes = film.total_votes;
   this.image_url = `http://image.tmdb.org/t/p/w185/${film.poster_path}`;
   this.popularity = film.popularity;
-  this.released_on = film.released_on;
+  this.release_date = film.release_date;
 }
 
 // Make sure the server is listening for requests
