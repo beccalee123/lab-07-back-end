@@ -5,6 +5,7 @@
 const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
+const pg = require('pg');
 
 // Load environment variables with DotENV
 
@@ -16,6 +17,12 @@ const PORT = process.env.PORT; // environment variables
 const app = express(); // creates app instance
 app.use(cors()); // tells app to use cors
 
+//Database Config
+const client = new pg.Client(process.env.DATABASE_URL);
+// DATABASE_URL=postgress://localhost:5432/city_explorer
+client.connect();
+client.on('error', err => console.error(err));
+
 // API Routes
 
 app.get('/location', (request, response) => {
@@ -24,11 +31,11 @@ app.get('/location', (request, response) => {
     .catch((error) => handleError(error, response));
 });
 
-app.get('/weather', getWeather);
-app.get('/yelp', getRestaurants);
-app.get('/movies', getMovies);
-app.get('/meetups', getMeetup);
-app.get('/trails', getTrail);
+// app.get('/weather', getWeather);
+// app.get('/yelp', getRestaurants);
+// app.get('/movies', getMovies);
+// app.get('/meetups', getMeetup);
+// app.get('/trails', getTrail);
 
 // Helper Functions
 
