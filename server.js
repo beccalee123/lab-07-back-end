@@ -5,6 +5,7 @@
 const express = require('express');
 const superagent = require('superagent');
 const cors = require('cors');
+const pg = require('pg');
 
 // Load environment variables with DotENV
 
@@ -16,6 +17,12 @@ const PORT = process.env.PORT; // environment variables
 const app = express(); // creates app instance
 app.use(cors()); // tells app to use cors
 
+//Database Config
+const client = new pg.Client(process.env.DATABASE_URL);
+// DATABASE_URL=postgress://localhost:5432/city_explorer
+client.connect();
+client.on('error', err => console.error(err));
+
 // API Routes
 
 app.get('/location', (request, response) => {
@@ -24,15 +31,17 @@ app.get('/location', (request, response) => {
     .catch((error) => handleError(error, response));
 });
 
-app.get('/weather', getWeather);
-app.get('/yelp', getRestaurants);
-app.get('/movies', getMovies);
+// app.get('/weather', getWeather);
+// app.get('/yelp', getRestaurants);
+// app.get('/movies', getMovies);
+// app.get('/meetups', getMeetup);
+// app.get('/trails', getTrail);
 
 // Helper Functions
 
 function searchToLatLong(query) {
   //Originally this referenced getting mock data from the JSON file as initial set up. Since the project is designed to work with APIs the code needed to be updated to submit search queries to APIs and return results.
-  
+
   //Concatenate URL
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${query}&key=${process.env.GEOCODE_API_KEY}`;
 
@@ -80,14 +89,43 @@ function getMovies(request, response) {
   const url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIESDB_API_KEY}&language=en-US&query=${request.query.data.search_query}`
 
   superagent.get(url)
-  .then(result => {
-    console.log(result.body);
-    const movieSummaries = result.body.results.map(film => {
-      return new Movie(film);
-    });
-    response.send(movieSummaries);
-  })
-  .catch(error => handleError(error, response));
+    .then(result => {
+      //console.log(result.body);
+      const movieSummaries = result.body.results.map(film => {
+        return new Movie(film);
+      });
+      response.send(movieSummaries);
+    })
+    .catch(error => handleError(error, response));
+}
+
+function getMeetup(request, response) {
+  const url = `https://api.meetup.com/find/upcoming_events?&sign=true&photo-host=public&page=20&lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.MEETUPS_API_KEY}`
+
+
+  superagent.get(url)
+    .then(result => {
+      // console.log('Body: ', result.body);
+      const meetupSummaries = result.body.events.map(event => {
+        return new Meetup(event);
+      });
+      response.send(meetupSummaries);
+    })
+    .catch(error => handleError(error, response));
+}
+
+function getTrail(request, response) {
+  const url =  `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&maxDistance=10&key=${process.env.TRAILS_API_KEY}`
+
+  superagent.get(url)
+    .then(result => {
+      console.log(result.body);
+      const trailSummaries = result.body.trails.map(hike => {
+        return new Trail(hike);
+      });
+      response.send(trailSummaries);
+    })
+    .catch(error => handleError(error, response));
 }
 
 //Error Handling
@@ -129,8 +167,28 @@ function Movie(film){
   this.total_votes = film.total_votes;
   this.image_url = `http://image.tmdb.org/t/p/w185/${film.poster_path}`;
   this.popularity = film.popularity;
-  this.released_on = film.released_on;
+  this.release_date = film.release_date;
 }
 
+function Meetup(event) {
+  this.link = `http://www.meetup.com/${event.link}`;
+  this.name = event.name;
+  this.creation_date = new Date(event.created);
+  this.host = event.group.name;
+}
+
+function Trail(hike) {
+  this.name = hike.name;
+  this.location = hike.location;
+  this.length = hike.length;
+  this.stars = hike.stars;
+  this.star_votes = hike.starVotes;
+  this.summary = hike.summary;
+  this.trail_url = `https://www.hikingproject.com/trail/${hike.id}/${hike.name}`;
+  this.conditions = hike.conditionDetails;
+  this.conditions_date = hike.conditionDate;
+  this.condition_time = hike.conditionDate;
+
+}
 // Make sure the server is listening for requests
 app.listen(PORT, () => console.log(`App is up on ${PORT}`));
